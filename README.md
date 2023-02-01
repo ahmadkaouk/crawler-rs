@@ -46,3 +46,6 @@ To print the top 10 posts, run the following command:
 ```bash
 $ docker exec -it crawler-rs-db-1 psql -d db -U user -c "SELECT * FROM posts ORDER BY score DESC LIMIT 10"
 ```
+
+### TODOs
+- Add tests (unit and integration tests)
