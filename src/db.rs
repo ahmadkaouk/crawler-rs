@@ -14,7 +14,7 @@ impl Db {
     pub async fn new() -> anyhow::Result<Self> {
         let pool = PgPoolOptions::new()
             .max_connections(20)
-            .connect(&DATABASE_URL)
+            .connect(DATABASE_URL)
             .await
             .context("failed to connect to {DATABASE_URL}")?;
 
@@ -44,12 +44,12 @@ impl Db {
         sqlx::query(
             r#"INSERT INTO posts (id, time, url, title, author, score) VALUES ($1, $2, $3, $4, $5, $6)"#,
         )
-        .bind(&post.id)
-        .bind(&post.time)
+        .bind(post.id)
+        .bind(post.time)
         .bind(&post.url)
         .bind(&post.title)
         .bind(&post.author)
-        .bind(&post.score)
+        .bind(post.score)
         .execute(&self.pool)
         .await?;
         Ok(())

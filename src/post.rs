@@ -80,7 +80,10 @@ pub async fn top_posts(State(db): State<Db>) -> Result<Json<Vec<Post>>, Error> {
     Ok(Json(posts))
 }
 
-pub async fn posts_by_user(State(db): State<Db>, Path(user): Path<String>) -> Result<Json<Vec<Post>>, Error> {
+pub async fn posts_by_user(
+    State(db): State<Db>,
+    Path(user): Path<String>,
+) -> Result<Json<Vec<Post>>, Error> {
     let posts = sqlx::query_as(r#"SELECT * FROM posts WHERE author = $1"#)
         .bind(user)
         .fetch_all(db.pool())

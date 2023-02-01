@@ -3,7 +3,7 @@ use anyhow::Ok;
 use axum::{routing::get, Router};
 use db::Db;
 use futures::{stream, StreamExt};
-use post::{create_post, posts, HackerNewsPost, top_posts, posts_by_user};
+use post::{create_post, posts, posts_by_user, top_posts, HackerNewsPost};
 
 mod db;
 mod error;
@@ -19,10 +19,7 @@ pub async fn crawl(db: &Db) -> anyhow::Result<()> {
     let top_stories: Vec<u32> = serde_json::from_str(&response)?;
     stream::iter(top_stories)
         .map(|id| async move {
-            let url = format!(
-                "https://hacker-news.firebaseio.com/v0/item/{}.json?print=pretty",
-                id
-            );
+            let url = format!("https://hacker-news.firebaseio.com/v0/item/{id}.json?print=pretty");
             // Parse the JSON response into a Post struct
             let post: HackerNewsPost = reqwest::get(&url).await?.json().await?;
             db.insert_post(post.into()).await?;
@@ -41,7 +38,7 @@ async fn main() -> anyhow::Result<()> {
     let db1 = db.clone();
     // Crawl the top stories from Hacker News
     tokio::spawn(async move {
-            crawl(&db1).await.unwrap();
+        crawl(&db1).await.unwrap();
     });
 
     let app = Router::new()
