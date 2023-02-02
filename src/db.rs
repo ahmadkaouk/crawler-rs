@@ -2,7 +2,6 @@ use crate::post::Post;
 use anyhow::{Context, Ok};
 use sqlx::{postgres::PgPoolOptions, PgPool};
 
-const DATABASE_URL: &str = "postgres://user:password@localhost:5432/db";
 
 #[derive(Debug, Clone)]
 pub struct Db {
@@ -12,11 +11,6 @@ pub struct Db {
 impl Db {
     /// Create a new database connection pool
     pub async fn new() -> anyhow::Result<Self> {
-        let pool = PgPoolOptions::new()
-            .max_connections(20)
-            .connect(DATABASE_URL)
-            .await
-            .context("failed to connect to {DATABASE_URL}")?;
 
         // Create the posts table if it doesn't exist
         sqlx::query(
